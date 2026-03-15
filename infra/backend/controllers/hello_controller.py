@@ -5,7 +5,7 @@ from schemas.hello_schema import HelloResponse
 router = APIRouter()
 
 
-@router.get("", response_model=HelloResponse)
+@router.get("/", response_model=HelloResponse)
 def hello():
 
     service = HelloService()

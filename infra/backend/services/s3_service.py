@@ -1,33 +1,26 @@
 import boto3
-from typing import List
-import os
+from typing import List, Dict
 
 
 class S3Service:
-    def __init__(self):
-        self.s3_client = boto3.client("s3")
-        self.bucket_name = os.environ.get("BUCKET_NAME")
+    def __init__(self, bucket_name: str):
+        self.bucket_name = bucket_name
+        self.s3 = boto3.client("s3")
 
-    def list_files(self, user_id: str) -> List[dict]:
-        """
-        Returns a list of file metadata for a specific user.
-        Each file is a dict: {'file_name': ..., 'size': ..., 'key': ...}
-        """
-        prefix = f"{user_id}/"
-        response = self.s3_client.list_objects_v2(
-            Bucket=self.bucket_name,
-            Prefix=prefix
+    def generate_presigned_url(self, key: str, expires_in: int = 3600):
+        url = self.s3.generate_presigned_url(
+            ClientMethod="get_object",
+            Params={"Bucket": self.bucket_name, "Key": key},
+            ExpiresIn=expires_in,
         )
+        return url
 
+    def list_files(self) -> List[Dict]:
+        response = self.s3.list_objects_v2(Bucket=self.bucket_name)
         files = []
-        if "Contents" in response:
-            for obj in response["Contents"]:
-                # Skip folder itself
-                if obj["Key"].endswith("/"):
-                    continue
-                files.append({
-                    "file_name": obj["Key"].replace(prefix, ""),
-                    "size": obj["Size"],
-                    "key": obj["Key"]
-                })
+        for obj in response.get("Contents", []):
+            files.append({
+                "key": obj["Key"],
+                "size": obj["Size"]
+            })
         return files
