@@ -20,3 +20,18 @@ def get_presigned_download_url(file_key: str):
     s3_service = S3Service(bucket_name=bucketName)
     url = s3_service.generate_presigned_url(file_key)
     return {"url": url}
+
+
+@router.put("/{file_key}/rename")
+def rename_file(file_key: str):
+    pass
+
+
+@router.post("/upload")
+def upload_file():
+    pass
+
+
+@router.delete("/delete")
+def delete_file():
+    pass
