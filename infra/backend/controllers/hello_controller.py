@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from services.hello_service import HelloService
-from schemas.hello_schema import HelloResponse
+from services.aws.hello_service import HelloService
+from models.hello_model import HelloResponse
 
 router = APIRouter()
 

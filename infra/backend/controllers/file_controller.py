@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from typing import List
-from services.s3_service import S3Service
-from schemas.file_schema import FileResponse
+from services.aws.s3_service import S3Service
+from models.file_model import FileResponse
 
 router = APIRouter()
 

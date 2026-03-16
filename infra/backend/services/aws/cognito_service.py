@@ -1,12 +1,11 @@
 import boto3
-from domain.services.auth_service import AuthService
 
 
-class CognitoService(AuthService):
+class CognitoService:
 
-    def __init__(self, client_id: str):
+    def __init__(self):
         self.client = boto3.client("cognito-idp")
-        self.client_id = client_id
+        self.client_id = "6afddfftiaavt6tkvvd4nh19dc"
 
     def login(self, email: str, password: str):
         response = self.client.initiate_auth(
