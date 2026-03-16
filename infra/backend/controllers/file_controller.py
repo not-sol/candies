@@ -8,7 +8,7 @@ router = APIRouter()
 bucketName = "candies-try-bucket"
 
 
-@router.get("", response_model=List[FileResponse])
+@router.get("/list", response_model=List[FileResponse])
 def list_files():
     s3_service = S3Service(bucket_name=bucketName)
     files = s3_service.list_files()
