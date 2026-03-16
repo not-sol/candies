@@ -6,10 +6,15 @@ class UserLogin(BaseModel):
     password: str
 
 
-class UserRegister(BaseModel):
+class UserCreate(BaseModel):
     email: EmailStr
     username: str
     password: str
+
+
+class ConfirmUserRequest(BaseModel):
+    username: str
+    confirmationCode: str
 
 
 class RefreshTokenRequest(BaseModel):
@@ -31,3 +36,7 @@ class TokenResponse(BaseModel):
     id_token: str
     refresh_token: str
     token_type: str
+
+
+class MessageResponse(BaseModel):
+    message: str
