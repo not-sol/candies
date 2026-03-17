@@ -2,7 +2,7 @@ from pydantic import BaseModel, EmailStr
 
 
 class UserLogin(BaseModel):
-    email: EmailStr
+    username: str
     password: str
 
 
@@ -14,7 +14,7 @@ class UserCreate(BaseModel):
 
 class ConfirmUserRequest(BaseModel):
     username: str
-    confirmationCode: str
+    confirmation_code: str
 
 
 class RefreshTokenRequest(BaseModel):
@@ -29,14 +29,3 @@ class ResetPasswordRequest(BaseModel):
     email: EmailStr
     confirmation_code: str
     new_password: str
-
-
-class TokenResponse(BaseModel):
-    access_token: str
-    id_token: str
-    refresh_token: str
-    token_type: str
-
-
-class MessageResponse(BaseModel):
-    message: str

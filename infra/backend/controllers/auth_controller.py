@@ -6,8 +6,6 @@ from models.auth_model import (
     UserLogin,
     UserCreate,
     ConfirmUserRequest,
-    TokenResponse,
-    MessageResponse
 )
 
 router = APIRouter()
@@ -18,7 +16,7 @@ async def me_user():
     pass
 
 
-@router.post("/login", response_model=TokenResponse)
+@router.post("/login")
 async def login_user(
     credentials: UserLogin,
     cognito: CognitoService = Depends(CognitoService)
@@ -35,14 +33,13 @@ async def login_user(
 
 
 @router.post("/register")
-async def register_user(
+async def create_user(
     credentials: UserCreate,
     cognito: CognitoService = Depends(CognitoService),
 ):
     try:
         uc = AuthUsecase(cognito)
-        await uc.create_user(credentials)
-        return {"message": "User registered successfully. Confirm your email."}
+        return uc.create_user(credentials)
 
     except ClientError as e:
         error_message = e.response["Error"]["Message"]
@@ -51,15 +48,14 @@ async def register_user(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post("/confirm", response_model=MessageResponse)
+@router.post("/confirm")
 async def confirm_user(
     request: ConfirmUserRequest,
     cognito: CognitoService = Depends(CognitoService)
 ):
     try:
         uc = AuthUsecase(cognito)
-        await uc.confirm_user(request)
-        return {"message": "User confirmed successfully"}
+        return uc.confirm_user(request)
 
     except ClientError as e:
         error_message = e.response["Error"]["Message"]
@@ -75,8 +71,7 @@ async def logout_user(
 ):
     try:
         uc = AuthUsecase(cognito)
-        await uc.logout_user(access_tokens)
-        return {"message": "User registered successfully. Confirm your email."}
+        return uc.logout_user(access_tokens)
 
     except ClientError as e:
         error_message = e.response["Error"]["Message"]
@@ -102,8 +97,7 @@ async def delete_user(
 ):
     try:
         uc = AuthUsecase(cognito)
-        await uc.delete_user(access_tokens)
-        return {"message": "User registered successfully. Confirm your email."}
+        return uc.delete_user(access_tokens)
 
     except ClientError as e:
         error_message = e.response["Error"]["Message"]
