@@ -21,8 +21,10 @@ class RefreshTokenRequest(BaseModel):
     refresh_token: str
 
 
-class ForgotPasswordRequest(BaseModel):
-    email: EmailStr
+class ForgotPasswordConfirm(BaseModel):
+    username: str
+    new_password: str
+    confirmation_code: str
 
 
 class ResetPasswordRequest(BaseModel):

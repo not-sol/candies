@@ -3,6 +3,7 @@ from models.auth_model import (
     UserLogin,
     UserCreate,
     ConfirmUserRequest,
+    ForgotPasswordConfirm
 )
 
 
@@ -12,6 +13,11 @@ class CognitoService:
         self.client = boto3.client("cognito-idp")
         self.client_id = "2kmf4vu3q7v1dolm7fo0jivi5t"
 
+    def get_user(self, access_token: str):
+        response = self.client.get_user(AccessToken=access_token)
+
+        return response
+
     def login_user(self, credentials: UserLogin):
         response = self.client.initiate_auth(
             ClientId=self.client_id,
@@ -19,6 +25,17 @@ class CognitoService:
             AuthParameters={
                 "USERNAME": credentials.username,
                 "PASSWORD": credentials.password
+            }
+        )
+
+        return response["AuthenticationResult"]
+
+    def refresh_access_token(self, refresh_token: str):
+        response = self.client.initiate_auth(
+            ClientId=self.client_id,
+            AuthFlow="REFRESH_TOKEN_AUTH",
+            AuthParameters={
+                "REFRESH_TOKEN": refresh_token,
             }
         )
 
@@ -45,8 +62,29 @@ class CognitoService:
 
         return response
 
-    def logout_user(self, access_tokens: str):
-        self.client.global_sign_out(AccessToken=access_tokens)
+    def resend_confirmation_code(self, username: str):
+        response = self.client.resend_confirmation_code(
+            ClientId=self.client_id,
+            Username=username,
+        )
+        return response
 
-    def delete_user(self, access_tokens: str):
-        self.client.delete_user(AccessToken=access_tokens)
+    def logout_user(self, access_token: str):
+        self.client.global_sign_out(AccessToken=access_token)
+
+    def request_forgot_password(self, username: str):
+        self.client.forgot_password(
+            ClientId=self.client_id,
+            Username=username,
+        )
+
+    def confirm_forgot_password(self, request: ForgotPasswordConfirm):
+        self.client.confirm_forgot_password(
+            ClientId=self.client_id,
+            Username=request.username,
+            Password=request.new_password,
+            ConfirmationCode=request.confirmation_code
+        )
+
+    def delete_user(self, access_token: str):
+        self.client.delete_user(AccessToken=access_token)
