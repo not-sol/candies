@@ -1,12 +1,18 @@
-from services.aws.s3_service import S3Service
 
 
 class FileUsecase:
-    def __init__(self, s3_service: S3Service):
-        self.s3_service = s3_service
+    def __init__(self, service):
+        self.storage_service = service
 
-    def list_files():
-        pass
+    def list_file(self, username: str):
+        response = self.storage_service.list_file(username)
+
+        return response
+
+    def list_files(self, username: str):
+        response = self.storage_service.list_files(username)
+
+        return response
 
     def create_file():
         pass
